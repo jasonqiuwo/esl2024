@@ -84,6 +84,7 @@ docker run hello-world
 ```
 
 ## Download and Install CUDA Toolkit 12.4
+https://www.cherryservers.com/blog/install-cuda-ubuntu
 
 - Installation Instructions:
 ```bash
@@ -139,23 +140,18 @@ docker run --gpus all nvidia/cuda:12.2.2-devel-ubuntu22.04 nvidia-smi
 
 ## Run the SubT Simulator and relative files: 
 
-- Terminal 1: Open the simulator (Hello Word Testing Sim: https://github.com/osrf/subt_hello_world/tree/master): 
+- Terminal 1: Open the simulator (Hello Word Testing Sim: https://github.com/osrf/subt_hello_world/tree/master): (https://github.com/osrf/subt_hello_world/issues/13)
 ```bash
-./subt/docker/run.bash osrf/subt-virtual-testbed:latest \ 
-cave_circuit.ign \ 
-circuit:=cave \ 
-worldName:=simple_cave_01 \ 
-robotName1:=X1 \ 
-robotConfig1:=X1_SENSOR_CONFIG_1
+./subt/docker/run.bash osrf/subt-virtual-testbed:latest \ cave_circuit.ign \ circuit:=cave \ worldName:=simple_cave_01 \ robotName1:=X1 \ robotConfig1:=X1_SENSOR_CONFIG_1
 ```
 
-- Terminal 2: Launch the teleop
+- Terminal 2: Open RViz to monitor the map
 ```bash
 docker ps
 
 docker exec -it [CONTAINER_ID] /bin/bash
 
-roslaunch subt_example teleop.launch
+rviz
 ```
 
 - *Another test bed:
@@ -170,5 +166,19 @@ wget https://raw.githubusercontent.com/osrf/subt/master/docker/run.bash
 chmod +x run.bash
 
 ./run.bash osrf/subt-virtual-testbed competition.ign worldName:=tunnel_circuit_practice_01 circuit:=tunnel robotName1:=X1 robotConfig1:=X1_SENSOR_CONFIG_1
+```
+
+- Install Teleop Keyboard for Docker Environment: 
+```bash
+sudo apt-get update
+sudo apt-get install ros-humble-teleop-twist-keyboard
+```
+
+- Terminal 3: Run the robot in teleoperation using keyboard 
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap /cmd_vel:=/X1/cmd_vel
+```
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard # Or use this line instead
 ```
 
