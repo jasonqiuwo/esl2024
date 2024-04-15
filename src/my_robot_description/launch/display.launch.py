@@ -21,12 +21,13 @@ def generate_launch_description():
     pkg_project_gazebo = get_package_share_directory('my_robot_description')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
     params = {'robot_description': robot_desc}
-    
+    rviz_config_dir = os.path.join(pkg_project_gazebo, 'rviz', 'basic.rviz')
+
     robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        output='screen',
-        parameters=[params]
+        output='both',
+        parameters=[{'use_sim_time': True}, params]
     )
 
     joint_state_publisher_node = launch_ros.actions.Node(
@@ -41,13 +42,14 @@ def generate_launch_description():
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         name='joint_state_publisher_gui',
-        condition=launch.conditions.IfCondition(LaunchConfiguration('gui'))
-    )
+        parameters=[params],
+        condition=launch.conditions.IfCondition(LaunchConfiguration('gui')))
     
     rviz_node = launch_ros.actions.Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
+        arguments=['-d', rviz_config_dir],
         output='screen'
     )
     
@@ -62,6 +64,16 @@ def generate_launch_description():
          ])}.items(),
     )
 
+    bridge =launch_ros.actions.Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        parameters=[{
+            'config_file': os.path.join(pkg_project_gazebo, 'rviz', 'bridge.yaml'),
+            'qos_overrides./tf_static.publisher.durability': 'transient_local',
+        }],
+        output='screen'
+    )
+
     return launch.LaunchDescription([
         gz_sim,
         launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
@@ -71,5 +83,6 @@ def generate_launch_description():
         robot_state_publisher_node,
         joint_state_publisher_node,
         joint_state_publisher_gui_node,
-        rviz_node
+        rviz_node, 
+        bridge
     ]) 

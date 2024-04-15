@@ -1,12 +1,12 @@
 <launch>
-      <let name="urdf_path"
+      <let name="urdf_path_robot"
         value="$(find-pkg-share my_robot_description)/urdf/my_robot.sdf" />
 
-      <let name="urdf_path"
+      <let name="urdf_path_world"
         value="$(find-pkg-share my_robot_description)/urdf/my_world.sdf" />
         
       <let name="rviz_config_path" 
-        value="$(find-pkg-share my_robot_description)/rviz/urdf_config.rviz" />
+        value="$(find-pkg-share my_robot_description)/rviz/basic.rviz" />
 
       <node pkg="robot_state_publisher" exec="robot_state_publisher">
           <param name="robot_description" 

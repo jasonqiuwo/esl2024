@@ -340,43 +340,50 @@
     </include>
 
     <model name="X1">
-      <self_collide>true</self_collide>
-      <pose>0 0 0.35 0 0 0</pose>
-      <include merge="true">
-        <uri>/home/jasonwoo/ros2_ws/src/my_robot_description/urdf/my_robot.sdf</uri>
-      </include>
+        <self_collide>true</self_collide>
+        <pose>0 0 0.35 0 0 0</pose>
+        <include merge="true">
+            <uri>/home/jasonwoo/ros2_ws/src/my_robot_description/urdf/my_robot.sdf</uri>
+        </include>
 
-      <plugin
-        filename="ignition-gazebo-joint-state-publisher-system"
-        name="ignition::gazebo::systems::JointStatePublisher">
-      </plugin>
+        <plugin
+            filename="ignition-gazebo-joint-state-publisher-system"
+            name="ignition::gazebo::systems::JointStatePublisher">
+        </plugin>
 
-      <plugin
-        filename="ignition-gazebo-pose-publisher-system"
-        name="ignition::gazebo::systems::PosePublisher">
-        <publish_link_pose>true</publish_link_pose>
-        <use_pose_vector_msg>true</use_pose_vector_msg>
-        <static_publisher>true</static_publisher>
-        <static_update_frequency>1</static_update_frequency>
-      </plugin>
+        <plugin
+            filename="ignition-gazebo-pose-publisher-system"
+            name="ignition::gazebo::systems::PosePublisher">
+            <publish_link_pose>true</publish_link_pose>
+            <use_pose_vector_msg>true</use_pose_vector_msg>
+            <static_publisher>true</static_publisher>
+            <static_update_frequency>1</static_update_frequency>
+        </plugin>
 
-      <plugin
-          filename="ignition-gazebo-diff-drive-system"
-          name="ignition::gazebo::systems::DiffDrive">
-          <left_joint>left_wheel_joint</left_joint>
-          <right_joint>right_wheel_joint</right_joint>
-          <wheel_separation>0.6</wheel_separation>
-          <wheel_radius>0.4</wheel_radius>
-          <odom_publish_frequency>1</odom_publish_frequency>
-          <topic>cmd_vel</topic>
-      </plugin>
+        <plugin
+            filename="ignition-gazebo-odometry-publisher-system"
+            name="ignition::gazebo::systems::OdometryPublisher">
+            <odom_frame>X1/odom</odom_frame>
+            <robot_base_frame>X1</robot_base_frame>
+        </plugin>
 
-      <plugin
-        filename="ignition-gazebo-odometry-publisher-system"
-        name="ignition::gazebo::systems::OdometryPublisher">
-        <odom_frame>diff_drive/odom</odom_frame>
-        <robot_base_frame>diff_drive</robot_base_frame>
-      </plugin>
+        <plugin
+            filename="ignition-gazebo-diff-drive-system"
+            name="ignition::gazebo::systems::DiffDrive">
+            <left_joint>left_wheel_joint</left_joint>
+            <right_joint>right_wheel_joint</right_joint>
+            <wheel_separation>0.6</wheel_separation>
+            <wheel_radius>0.3</wheel_radius>
+            <odometryTopic>odometry</odometryTopic>
+            <odometryFrame>X1/odom</odometryFrame>
+            <robotBaseFrame>chassis</robotBaseFrame>
+            <odometrySource>1</odometrySource>
+            <publishWheelTF>true</publishWheelTF>
+            <publishOdom>true</publishOdom>
+            <publishWheelJointState>true</publishWheelJointState>
+            <odom_publish_frequency>1</odom_publish_frequency>
+            <topic>cmd_vel</topic>
+        </plugin>
     </model>
 
     <!-- Moving Forward-->
